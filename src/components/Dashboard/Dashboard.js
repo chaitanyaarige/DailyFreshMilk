@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import { Redirect } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import "./Dashboard.scss";
 import Navbar from "components/common/Navbar";
 import MobileNav from "components/common/MobileNav";
@@ -85,7 +85,7 @@ export default function Dashboard() {
   return (
     <div>
       {!isLoggedIn() ? (
-        <Redirect to="/login" />
+        <Navigate to="/login" />
       ) : (
         <div>
           <Navbar currentMenuSelection={currentSelection}></Navbar>

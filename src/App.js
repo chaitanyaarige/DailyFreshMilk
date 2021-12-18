@@ -1,10 +1,13 @@
 import { useState, useEffect } from "react";
 import "./App.scss";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import UserContext from "UserContext";
 import Login from "components/login/Login";
 import Dashboard from "components/Dashboard/Dashboard";
+import Users from "components/Users/Users";
 import Landing from "components/common/Landing";
+import fournotfour from "components/common/404";
+import ProtectedRoutes from "./ProtectedRoutes";
 import { refreshToken } from "store/auth";
 
 export default function App() {
@@ -69,14 +72,19 @@ export default function App() {
   return (
     <div className="App">
       <Router>
-        <Switch>
+        <Routes>
           <UserContext.Provider value={userSettings}>
-            <Route exact path="/" component={Landing} />
-            <Route exact path="/login" component={Login} />
-            <Route exact path="/dashboard" component={Dashboard} />
-            <Route exact={true} path="*" component={Landing} />
+            <Route path="/login" element={Login} />
+            <Route path="/dashboard" element={Dashboard} />
+            <Route path="/" element={Dashboard} />
+            <ProtectedRoutes
+              path="/users"
+              element={Users}
+              isAuthenticated={isLoggedIn}
+            />
+            <Route element={fournotfour} />
           </UserContext.Provider>
-        </Switch>
+        </Routes>
       </Router>
     </div>
   );

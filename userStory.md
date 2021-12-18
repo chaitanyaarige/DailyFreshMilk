@@ -6,6 +6,8 @@
 6. Rates, payment need not implement
 7. There is existing Milk management in wordpress, check implementation
 
+npx npm-check-updates -u
+
 <!-- add email login validation and phone number validation -->
 
 react Error: Canvas is already in use. Chart with ID '0' must be destroyed before the canvas can be reused.
@@ -30,6 +32,7 @@ Sort according to Date and fetch only with Date
 animations transitions
 mini Navbar functionality
 
+&**\*\***\*\***\*\***\*\***\*\***\*\***\*\***8
 Admin should select user and then there export option based on dates should be there and when he clicks on export then all the successful deliveries and date, quantity, product and price with total should be exported.
 
 cancel order

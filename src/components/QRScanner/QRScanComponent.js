@@ -4,9 +4,11 @@ import { Container, Card, CardContent, Grid } from "@mui/material";
 import { updateLocationOfUser } from "store/assignUsers";
 import { scannedDelivery } from "store/deliveries";
 import QrReader from "react-qr-reader";
+import SelectQuantity from "components/AssigningUsersToAgent/SelectQuantity";
 
 export default function QRScanComponent(props) {
   const [scanResultWebCam, setScanResultWebCam] = useState("");
+  const [quantity, setQuantity] = useState(null);
   // const qrRef = useRef(null);
   const userInfo = useContext(UserContext);
   const { access_token } = userInfo;
@@ -21,7 +23,7 @@ export default function QRScanComponent(props) {
         listDeliveries: [
           {
             delivery_id: props.currentUser.delivery_id,
-            quantity: props.currentUser.quantity,
+            quantity: quantity ? quantity : props.currentUser.quantity,
             user_id: result,
             delivery_date: new Date().toISOString(),
           },
@@ -37,6 +39,11 @@ export default function QRScanComponent(props) {
           alert("failed");
         });
     }
+  };
+
+  const handleData = (e, b) => {
+    e.preventDefault();
+    setQuantity(b);
   };
 
   const updateLocationByAgent = () => {
@@ -76,6 +83,8 @@ export default function QRScanComponent(props) {
     <Container className="conatiner">
       <Card>
         <h2 className="title">Scan QR Code with DailyFreshMilk</h2>
+        <h3>Please select the quantity</h3>
+        <SelectQuantity handleData={handleData}></SelectQuantity>
         <CardContent>
           <Grid container spacing={2}>
             <Grid item xl={4} lg={4} md={6} sm={12} xs={12}>

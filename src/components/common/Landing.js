@@ -1,4 +1,4 @@
-import { Redirect } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 
 import { useContext } from "react";
 import UserContext from "UserContext";
@@ -12,7 +12,11 @@ const Landing = () => {
 
   return (
     <div>
-      {isLoggedIn() === true ? <Redirect to="/dashboard" /> : <Redirect to="/login" />}
+      {isLoggedIn() === true ? (
+        <Navigate to="/dashboard" />
+      ) : (
+        <Navigate to="/login" />
+      )}
     </div>
   );
 };

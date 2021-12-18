@@ -1,5 +1,5 @@
 import { useState, useContext } from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 import jwt from "jsonwebtoken";
 import Paper from "@mui/material/Paper";
@@ -23,7 +23,7 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [apiresponsemessage, setapiresponse] = useState(null);
 
-  let history = useHistory();
+  let navigate = useNavigate();
 
   const userInfo = useContext(UserContext);
 
@@ -95,14 +95,14 @@ export default function Login() {
         userInfo.setIsAdmin(true);
         userInfo.setRefreshToken(refresh_token);
         userInfo.saveuserDetails(res.data.data);
-        return history.push("/dashboard");
+        return navigate("/dashboard");
       } else if (res.data.data.user_type === 2) {
         userInfo.setIsLoggedIn(true);
         userInfo.setAccessToken(token);
         userInfo.setIsAdmin(false);
         userInfo.setRefreshToken(refresh_token);
         userInfo.saveuserDetails(res.data.data);
-        return history.push("/dashboard");
+        return navigate("/dashboard");
       } else {
         setapiresponse("Un Authorized User");
       }
