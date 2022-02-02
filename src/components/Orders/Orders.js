@@ -224,7 +224,7 @@ export default function Orders() {
                 sortByAgent={sortByAgent}
               ></MiniNavbar>
               {currentUser ? (
-                <OrdersCancel order={currentUser}></OrdersCancel>
+                <OrdersCancel access_token={access_token} order={currentUser}></OrdersCancel>
               ) : (
                 <div>
                   <OrdersListing

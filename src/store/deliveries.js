@@ -51,3 +51,12 @@ export const getHistory = (access_token, data) => {
     data: data,
   });
 };
+
+export const cancelDelivery = (access_token, data) => {
+  return axiosInstance({
+    method: "POST",
+    url: "agentuser/cancelDelivery",
+    headers: { access_token: access_token },
+    data: data,
+  });
+};

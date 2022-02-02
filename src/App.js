@@ -6,7 +6,7 @@ import UserContext from "UserContext";
 import Login from "components/login/Login";
 import Orders from "components/Orders/Orders";
 import Users from "components/Users/Users";
-import UsersHistory from "components/Users/UsersHistory";
+import UsersHistory from "components/Users/_id/User";
 // import OrdersCancel from "components/Orders/OrdersCancel";
 import Products from "components/Products/Products";
 import EditProducts from "components/Products/EditProduct";

@@ -3,7 +3,7 @@ import { useContext, useState } from "react";
 import UserContext from "UserContext";
 import Paper from "@mui/material/Paper";
 import TextField from "@mui/material/TextField";
-import HistoryTable from "components/Users/HistoryTable";
+import HistoryTable from "components/common/HistoryTable";
 import "components/Users/Users.scss";
 import MySnack from "components/common/MySnack";
 import Skeleton from "@mui/material/Skeleton";
@@ -14,9 +14,7 @@ export default function UsersHistory() {
   const [spinner, toggleSpinner] = useState(false);
   const [historyData, setHistoryData] = useState([]);
   let { access_token } = userInfo;
-  const [fromSelectedDate, setFromDate] = useState(
-    new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()
-  );
+  const [fromSelectedDate, setFromDate] = useState(new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString());
   const [alertmessage, setalertmessage] = useState(null);
   const [toSelectedDate, setToDate] = useState(new Date().toISOString());
 
@@ -109,10 +107,7 @@ export default function UsersHistory() {
                 }}
               />
             </div>
-            <button
-              className="Users__refresh-button"
-              onClick={(e) => getCustomerData(e)}
-            >
+            <button className="Users__refresh-button" onClick={(e) => getCustomerData(e)}>
               Submit
             </button>{" "}
           </Paper>
@@ -124,12 +119,7 @@ export default function UsersHistory() {
         <div className="Agents__spinners">
           <Spinner />
           <Skeleton animation="wave" height={100} width="80%" />
-          <Skeleton
-            variant="rectangular"
-            animation="wave"
-            width={210}
-            height={118}
-          />
+          <Skeleton variant="rectangular" animation="wave" width={210} height={118} />
         </div>
       )}
       {alertmessage && <MySnack message={alertmessage} />}

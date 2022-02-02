@@ -24,29 +24,20 @@ total price in excel
 
 1. Unable to open user details after clicking.
 2. Assign users should also show apartment name.
-3. quantity with 500ml or kg or ltr
-4. When click outside remove type pad and getting Undo type
-5. Scrolling not working when opening menu
-6. Admin or User edit option not enabled but able to see it may be UI bootstrap issue.
-7. Remove QR code for Admin.
-8. When selecting user give his order details so that he can update details in that page.
-9. Updating product details with complete cell option.
-10. Upload image and storing it in server.
-11. location update only when 0, 0
-12. Update Location - separate button - if needed by agent using a Button
-13. products need edit option so that we can change the price and name of the product
-14. And there I need an option to add an image
-15. And in assign users to agents there if I enter 101 I am getting 4-5 options there I need like block or apartment name so that we can I identify which customer
-16. in user data as a admin I should have access to edit that details which are already added to make changes like from morning delivery to evening delivery or change of milk like cow to buffalo or desi cow milk like that
-
---- _ -------------- _
-
-18. in accounts I am unable to open edit admin option the button is there but unable to access it
-
-19. Should be able to cancel the Order
-20. Edit Product page with new options
-21. make scan qr - UI neat - with user name and phone number - download this frame
-22. in host/users/:id give option to edit/update delivery details
-23. quantity with 500ml or kg or ltr (with respect to key from the Product api)
-
-In iOS, Assign users, on autocomplete dropdown, on clicking outside getting undo type
+3. When click outside remove type pad and getting Undo type
+4. Scrolling not working when opening menu
+5. Admin or User edit option not enabled but able to see it may be UI bootstrap issue.
+6. Remove QR code for Admin.
+7. When selecting user give his order details so that he can update details in that page.
+8. Updating product details with complete cell option.
+9. Upload image and storing it in server.
+10. And there I need an option to add an image
+11. And in assign users to agents there if I enter 101 I am getting 4-5 options there I need like block or apartment name so that we can I identify which customer
+12. in user data as a admin I should have access to edit that details which are already added to make changes like from morning delivery to evening delivery or change of milk like cow to buffalo or desi cow milk like that
+13. in accounts I am unable to open edit admin option the button is there but unable to access it
+14. Should be able to cancel the Order
+15. Edit Product page with new options
+16. make scan qr - UI neat - with user name and phone number - download this frame
+17. in host/users/:id give option to edit/update delivery details
+18. quantity with 500ml or kg or ltr (with respect to key from the Product api)
+19. In iOS, Assign users, on autocomplete dropdown, on clicking outside getting undo type
