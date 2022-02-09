@@ -24,11 +24,22 @@ export default function SelectQuantity(props) {
         getOptionLabel={(option) => option.toString()}
         renderOption={(props, option, { selected }) => (
           <li {...props}>
-            <Checkbox icon={icon} checkedIcon={checkedIcon} style={{ marginRight: 8 }} checked={selected} />
+            <Checkbox
+              icon={icon}
+              checkedIcon={checkedIcon}
+              style={{ marginRight: 8 }}
+              checked={selected}
+            />
             {option}
           </li>
         )}
-        renderInput={(params) => <TextField {...params} label="Select quantity" placeholder="quantity" />}
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            label={props.measurement || "Select quantity"}
+            placeholder="quantity"
+          />
+        )}
       />
     </div>
   );

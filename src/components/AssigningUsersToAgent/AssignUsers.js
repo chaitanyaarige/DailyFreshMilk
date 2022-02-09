@@ -119,6 +119,7 @@ export default function AssignUsers() {
       ...sendData,
       price: value.price,
       product_type: value.product_type,
+      measurement: value.measurement || "",
     });
     toggleDataEntered(true);
   };
@@ -161,6 +162,7 @@ export default function AssignUsers() {
         return (
           <>
             <SelectQuantity
+              measurement={sendData.measurement || ""}
               handleData={handleData}
               refreshAccessToken={userInfo.refreshAccessToken}
               access_token={userInfo.access_token}
