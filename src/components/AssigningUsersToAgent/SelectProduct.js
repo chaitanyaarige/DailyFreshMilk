@@ -1,10 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Autocomplete from "@mui/material/Autocomplete";
 import Checkbox from "@mui/material/Checkbox";
 import TextField from "@mui/material/TextField";
 import { listProducts } from "store/products";
 import CheckBoxOutlineBlankIcon from "svgs/unchecked.svg";
 import CheckBoxIcon from "svgs/checked.svg";
+import { useQuery } from "react-query";
 
 const icon = <img src={CheckBoxOutlineBlankIcon} alt="dsd" fontSize="small" />;
 const checkedIcon = <img src={CheckBoxIcon} alt="dsds" fontSize="small" />;
@@ -15,22 +16,17 @@ export default function SelectProduct(props) {
 
   const { access_token, refreshAccessToken, handlePData } = props;
 
-  useEffect(() => {
-    const getAllProducts = () => {
-      listProducts(1, access_token)
-        .then((res) => {
-          setProducts(res.data.data);
-          //   toggleSpinner(false);
-        })
-        .catch((res) => {
-          if (res && res.response && res.response.status === 401) {
-            // toggleSpinner(true);
-            refreshAccessToken();
-          }
-        });
-    };
-    getAllProducts();
-  }, [access_token, refreshAccessToken]);
+  useQuery([1, access_token], listProducts, {
+    retry: 1,
+    onSuccess: (data) => {
+      data?.data && setProducts(data.data.data);
+    },
+    onError: (error) => {
+      if (error?.response?.status === 401) {
+        refreshAccessToken();
+      }
+    },
+  });
 
   return (
     <div className="AssignUsers__main">
@@ -43,22 +39,11 @@ export default function SelectProduct(props) {
         getOptionLabel={(option) => option.name}
         renderOption={(props, option, { selected }) => (
           <li {...props}>
-            <Checkbox
-              icon={icon}
-              checkedIcon={checkedIcon}
-              style={{ marginRight: 8 }}
-              checked={selected}
-            />
+            <Checkbox icon={icon} checkedIcon={checkedIcon} style={{ marginRight: 8 }} checked={selected} />
             {option.name}
           </li>
         )}
-        renderInput={(params) => (
-          <TextField
-            {...params}
-            label="Select Products"
-            placeholder="products"
-          />
-        )}
+        renderInput={(params) => <TextField {...params} label="Select Products" placeholder="products" />}
       />
     </div>
   );

@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useContext } from "react";
 import { useForm } from "react-hook-form";
 import { updateProduct } from "store/products";
 import { useNavigate } from "react-router-dom";
@@ -25,20 +25,6 @@ export default function EditProducts() {
     price: "",
     measurement: "",
   });
-
-  // useQuery([3, userInfo.access_token], updateProduct, {
-  //   retry: 1,
-  //   onSuccess: (data) => {
-  //     data?.data && setSelectedProduct(data.data.data);
-  //     toggleSpinner(false);
-  //   },
-  //   onError: (error) => {
-  //     if (error && error.response && error.response.status === 401) {
-  //       toggleSpinner(true);
-  //       userInfo.refreshAccessToken();
-  //     }
-  //   },
-  // });
 
   const onSubmit = async (data) => {
     const returnedTarget = Object.assign(product, data);
@@ -68,30 +54,28 @@ export default function EditProducts() {
       });
   };
 
-  useEffect(() => {
-    const setCurrentProduct = () => {
-      let curr_id = window.location.pathname.split("/")[2];
-      if (curr_id) {
-        let abb = products.find((item) => item.id === curr_id);
-        setSelectedProduct(abb);
+  useQuery([0, access_token], listProducts, {
+    retry: 1,
+    onSuccess: (data) => {
+      data?.data && setProducts(data.data.data);
+      setCurrentProduct();
+      toggleSpinner(false);
+    },
+    onError: (error) => {
+      if (error?.response?.status === 401) {
+        toggleSpinner(true);
+        refreshAccessToken();
       }
-    };
-    toggleSpinner(true);
-    listProducts(null, access_token)
-      .then((res) => {
-        setProducts(res.data.data);
-        setCurrentProduct();
-        toggleSpinner(false);
-      })
-      .catch((res) => {
-        // optional chaining
-        let status = res?.response?.status;
-        if (status & (status === 401)) {
-          refreshAccessToken();
-          toggleSpinner(false);
-        }
-      });
-  }, [access_token, refreshAccessToken, products]);
+    },
+  });
+
+  const setCurrentProduct = () => {
+    let curr_id = window.location.pathname.split("/")[2];
+    if (curr_id) {
+      let abb = products.find((item) => item.id === curr_id);
+      setSelectedProduct(abb);
+    }
+  };
 
   const goBack = (e) => {
     e.preventDefault();
@@ -132,11 +116,7 @@ export default function EditProducts() {
         <div className="Products__sub-container">
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="Login__col-3">
-              {errors.name && (
-                <div className="Users__errors">
-                  Name needs to be at least 3 characters
-                </div>
-              )}
+              {errors.name && <div className="Users__errors">Name needs to be at least 3 characters</div>}
               <input
                 className="Login__input-focus-effect"
                 type="text"
@@ -153,9 +133,7 @@ export default function EditProducts() {
             </div>
 
             <div className="Login__col-3">
-              {errors.price && (
-                <div className="Users__errors">This field is required</div>
-              )}
+              {errors.price && <div className="Users__errors">This field is required</div>}
 
               <input
                 className="Login__input-focus-effect"
@@ -170,11 +148,7 @@ export default function EditProducts() {
             </div>
 
             <div className="Login__col-3">
-              {errors.description && (
-                <div className="Users__errors">
-                  Please enter a valid description min 8 char"
-                </div>
-              )}
+              {errors.description && <div className="Users__errors">Please enter a valid description min 8 char"</div>}
               <input
                 className="Login__input-focus-effect"
                 type="description"
@@ -185,11 +159,7 @@ export default function EditProducts() {
             </div>
 
             <div className="Login__col-3">
-              {errors.measurement && (
-                <div className="Users__errors">
-                  Please enter a valid measurement Kg/packet/Litre"
-                </div>
-              )}
+              {errors.measurement && <div className="Users__errors">Please enter a valid measurement Kg/packet/Litre"</div>}
               <input
                 className="Login__input-focus-effect"
                 type="measurement"
@@ -201,11 +171,7 @@ export default function EditProducts() {
 
             <div className="Login__col-3">
               <input
-                className={
-                  errors.length
-                    ? "Users__refresh-button Users__refresh-button-disabled"
-                    : "Users__refresh-button"
-                }
+                className={errors.length ? "Users__refresh-button Users__refresh-button-disabled" : "Users__refresh-button"}
                 type="submit"
                 value="Add New Product"
               ></input>
@@ -216,12 +182,7 @@ export default function EditProducts() {
         <div className="Products__spinners">
           <Spinner />
           <Skeleton animation="wave" height={100} width="80%" />
-          <Skeleton
-            variant="rectangular"
-            animation="wave"
-            width={210}
-            height={118}
-          />
+          <Skeleton variant="rectangular" animation="wave" width={210} height={118} />
           {/* <img height="150px" width="150px" src={Spinner} alt="Daily"></img> */}
         </div>
       )}

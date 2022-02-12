@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useContext } from "react";
 import ProductsListing from "components/Products/ProductsListing";
 import AddProduct from "components/Products/AddProduct";
 import Spinner from "components/common/Spinner";
@@ -10,6 +10,7 @@ import Stack from "@mui/material/Stack";
 import "./Products.scss";
 import { listProducts } from "store/products";
 import UserContext from "UserContext";
+import { useQuery } from "react-query";
 
 export default function Products() {
   const userInfo = useContext(UserContext);
@@ -17,27 +18,26 @@ export default function Products() {
   const [products, setProducts] = useState([]);
   const [addagenttoggle, toggleAddProduct] = useState(false);
   const [page] = useState(1);
+  const { access_token, refreshAccessToken } = userInfo;
 
-  useEffect(() => {
-    toggleSpinner(true);
-    listProducts(null, userInfo.access_token)
-      .then((res) => {
-        setProducts(res.data.data);
-        toggleSpinner(false);
-      })
-      .catch((res) => {
-        // optional chaining
-        let status = res?.response?.status;
-        if (status & (status === 401)) {
-          userInfo.refreshAccessToken();
-          toggleSpinner(false);
-        }
-      });
-  }, [userInfo.access_token, userInfo, addagenttoggle]);
+  const { refetch } = useQuery([0, access_token], listProducts, {
+    retry: 1,
+    onSuccess: (data) => {
+      data?.data && setProducts(data.data.data);
+      toggleSpinner(false);
+    },
+    onError: (error) => {
+      if (error?.response?.status === 401) {
+        toggleSpinner(true);
+        refreshAccessToken();
+      }
+    },
+  });
 
   const addProductClicked = (e) => {
     e && e.preventDefault();
     toggleAddProduct(!addagenttoggle);
+    refetch();
   };
 
   return (

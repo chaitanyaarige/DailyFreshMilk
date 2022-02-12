@@ -24,9 +24,7 @@ export default function UsersHistory() {
   const [historyData, setHistoryData] = useState([]);
   // const [modifiedHistory, setConvertedHistory] = useState(null);
   let { access_token, refreshAccessToken } = userInfo;
-  const [fromSelectedDate, setFromDate] = useState(
-    new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()
-  );
+  const [fromSelectedDate, setFromDate] = useState(new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString());
   const [alertmessage, setalertmessage] = useState(null);
   const [toSelectedDate, setToDate] = useState(new Date().toISOString());
   const [imageUrl, setImageUrl] = useState("");
@@ -36,8 +34,7 @@ export default function UsersHistory() {
   useQuery([3, userInfo.access_token], listUsers, {
     retry: 1,
     onSuccess: (data) => {
-      data?.data &&
-        setCurrUser(data.data.data.find((i) => i.user_id === curr_id));
+      data?.data && setCurrUser(data.data.data.find((i) => i.user_id === curr_id));
       toggleSpinner(false);
     },
     onError: (error) => {
@@ -48,13 +45,10 @@ export default function UsersHistory() {
     },
   });
 
-  useQuery([userInfo.access_token, null], listAgentUsers, {
+  useQuery([access_token, null], listAgentUsers, {
     retry: 1,
     onSuccess: (data) => {
-      data?.data &&
-        setCurrentOrder(
-          data.data.data.find((item) => item.user_id === curr_id)
-        );
+      data?.data && setCurrentOrder(data.data.data.find((item) => item.user_id === curr_id));
     },
   });
 
@@ -73,10 +67,7 @@ export default function UsersHistory() {
         };
         setCurrid(window.location.pathname.split("/")[2]);
         const response = await QRCode.toDataURL(curr_id, opts);
-        var url = response.replace(
-          /^data:image\/[^;]+/,
-          "data:application/octet-stream"
-        );
+        var url = response.replace(/^data:image\/[^;]+/, "data:application/octet-stream");
         setImageUrl(url);
       } catch (error) {
         console.log(error);
@@ -162,25 +153,14 @@ export default function UsersHistory() {
         <>
           <Paper className="AssignUsers__sub" elevation={2}>
             <div style={{ backgroundColor: "white" }} id="chaiuserqr">
-              <img
-                className="Users__logo-image"
-                src={DailyMilkFreshLogo}
-                alt="this is logo"
-              ></img>{" "}
-              <br></br>
+              <img className="Users__logo-image" src={DailyMilkFreshLogo} alt="this is logo"></img> <br></br>
               <div>
                 {imageUrl ? (
                   <div>
-                    <img
-                      width="350px"
-                      height="350px"
-                      src={imageUrl}
-                      alt="img"
-                    />
+                    <img width="350px" height="350px" src={imageUrl} alt="img" />
                   </div>
                 ) : null}
-                {currUser.name}, {currUser.phone_no}, <br></br>{" "}
-                {currUser.address}
+                {currUser.name}, {currUser.phone_no}, <br></br> {currUser.address}
               </div>
             </div>
             <div className="Users__refresh-button " onClick={onCapture}>
@@ -226,10 +206,7 @@ export default function UsersHistory() {
                 }}
               />
             </div>
-            <button
-              className="Users__refresh-button"
-              onClick={(e) => getCustomerData(e)}
-            >
+            <button className="Users__refresh-button" onClick={(e) => getCustomerData(e)}>
               Submit
             </button>{" "}
           </Paper>
@@ -241,12 +218,7 @@ export default function UsersHistory() {
         <div className="Agents__spinners">
           <Spinner />
           <Skeleton animation="wave" height={100} width="80%" />
-          <Skeleton
-            variant="rectangular"
-            animation="wave"
-            width={210}
-            height={118}
-          />
+          <Skeleton variant="rectangular" animation="wave" width={210} height={118} />
         </div>
       )}
       {alertmessage && <MySnack message={alertmessage} />}
