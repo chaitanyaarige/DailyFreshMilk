@@ -19,6 +19,13 @@
     }
   }
 
+  &__logo-image {
+    width: 400px;
+    height: 200px;
+    display: block;
+    margin: auto;
+  }
+
   &__status {
     display: flex;
     align-items: center;

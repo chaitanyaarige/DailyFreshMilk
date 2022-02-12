@@ -15,6 +15,7 @@ import { listUsers } from "store/user";
 import { saveAs } from "file-saver";
 import AssignUsers from "components/AssigningUsersToAgent/AssignUsers";
 import { listAgentUsers } from "store/assignUsers";
+import DailyMilkFreshLogo from "logo.png";
 
 export default function UsersHistory() {
   let userInfo = useContext(UserContext);
@@ -160,18 +161,31 @@ export default function UsersHistory() {
       {!spinner ? (
         <>
           <Paper className="AssignUsers__sub" elevation={2}>
+            <div style={{ backgroundColor: "white" }} id="chaiuserqr">
+              <img
+                className="Users__logo-image"
+                src={DailyMilkFreshLogo}
+                alt="this is logo"
+              ></img>{" "}
+              <br></br>
+              <div>
+                {imageUrl ? (
+                  <div>
+                    <img
+                      width="350px"
+                      height="350px"
+                      src={imageUrl}
+                      alt="img"
+                    />
+                  </div>
+                ) : null}
+                {currUser.name}, {currUser.phone_no}, <br></br>{" "}
+                {currUser.address}
+              </div>
+            </div>
             <div className="Users__refresh-button " onClick={onCapture}>
               Customer Unique Scan Code - Download
             </div>{" "}
-            <br></br>
-            <div style={{ backgroundColor: "white" }} id="chaiuserqr">
-              {imageUrl ? (
-                <div>
-                  <img width="350px" height="350px" src={imageUrl} alt="img" />
-                </div>
-              ) : null}
-              {currUser.name}, {currUser.phone_no}, <br></br> {currUser.address}
-            </div>
           </Paper>
 
           <Paper className="Users__top">
