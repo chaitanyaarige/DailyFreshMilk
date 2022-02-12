@@ -11,21 +11,33 @@ import UserContext from "UserContext";
 import { useQuery } from "react-query";
 
 export default function EditProducts() {
+  // Global values
   const navigate = useNavigate();
   const userInfo = useContext(UserContext);
-  const [spinner, toggleSpinner] = useState(false);
-  const [products, setProducts] = useState([]);
-  const [selectedProduct, setSelectedProduct] = useState();
-
   const { access_token, refreshAccessToken } = userInfo;
 
+  //  State
+  const [spinner, toggleSpinner] = useState(false);
+  // const [products, setProducts] = useState([]);
+  const [selectedProduct, setSelectedProduct] = useState(null);
   const [product, setProductProfile] = useState({
     name: "",
     description: "",
     price: "",
     measurement: "",
+
+    //     availability: 1
+    // created_at: "2022-02-05T15:13:37.000Z"
+    // description: "cow ghee"
+    // id: "e176d60b-01fd-4279-9f85-9c670cd6b049"
+    // image: null
+    // measurement: "kg"
+    // name: "Ghee"
+    // price: 80
+    // product_type: 1
   });
 
+  // Functions
   const onSubmit = async (data) => {
     const returnedTarget = Object.assign(product, data);
     setProductProfile({ ...returnedTarget });
@@ -36,17 +48,14 @@ export default function EditProducts() {
     register,
     formState: { errors },
     handleSubmit,
+    reset,
   } = useForm();
 
   const submitDataFinal = () => {
-    let data = {
-      product,
-      access_token: access_token,
-    };
-    updateProduct(data)
+    updateProduct(access_token, selectedProduct.id, product)
       .then((res) => {
         alert("success");
-        setTimeout(() => {}, 2000);
+        navigate("/products");
       })
       .catch((err) => {
         console.log("Failed", err.response);
@@ -55,10 +64,10 @@ export default function EditProducts() {
   };
 
   useQuery([0, access_token], listProducts, {
-    retry: 1,
+    retry: 2,
     onSuccess: (data) => {
-      data?.data && setProducts(data.data.data);
-      setCurrentProduct();
+      // data?.data && setProducts(data.data.data);
+      data?.data?.data && setCurrentProduct(data.data.data);
       toggleSpinner(false);
     },
     onError: (error) => {
@@ -69,11 +78,12 @@ export default function EditProducts() {
     },
   });
 
-  const setCurrentProduct = () => {
+  const setCurrentProduct = (p) => {
     let curr_id = window.location.pathname.split("/")[2];
     if (curr_id) {
-      let abb = products.find((item) => item.id === curr_id);
+      let abb = p.find((item) => item.id === curr_id);
       setSelectedProduct(abb);
+      reset({ name: abb.name, price: abb.price, description: abb.description, measurement: abb.measurement });
     }
   };
 
@@ -173,7 +183,7 @@ export default function EditProducts() {
               <input
                 className={errors.length ? "Users__refresh-button Users__refresh-button-disabled" : "Users__refresh-button"}
                 type="submit"
-                value="Add New Product"
+                value="Edit Product"
               ></input>
             </div>
           </form>

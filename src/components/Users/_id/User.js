@@ -48,7 +48,7 @@ export default function UsersHistory() {
   useQuery([access_token, null], listAgentUsers, {
     retry: 1,
     onSuccess: (data) => {
-      data?.data && setCurrentOrder(data.data.data.find((item) => item.user_id === curr_id));
+      data?.data && setCurrentOrder(data.data.data.filter((item) => item.user_id === curr_id));
     },
   });
 
@@ -168,12 +168,16 @@ export default function UsersHistory() {
             </div>{" "}
           </Paper>
 
-          <Paper className="Users__top">
-            <div>Existing Delivery Details</div>
-            <div>Selected Product: {currentOrder.product_type} </div>
-            <div>Selected DeliveryType: {currentOrder.delivery_type} </div>
-            <div>Selected Quantity {currentOrder.quantity}:</div>
-          </Paper>
+          {currentOrder.map((cuser, index) => {
+            return (
+              <Paper className="Users__top">
+                <div>Existing Delivery Details</div>
+                <div>Selected Product: {cuser.product_type} </div>
+                <div>Selected DeliveryType: {cuser.delivery_type} </div>
+                <div>Selected Quantity {cuser.quantity}</div>
+              </Paper>
+            );
+          })}
 
           <Paper>
             <AssignUsers></AssignUsers>

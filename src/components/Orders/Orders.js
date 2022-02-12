@@ -98,42 +98,30 @@ export default function Orders() {
 
   const sortByName = () => {
     if (sortName) {
-      setSortOrders(
-        sortOrders.sort((a, b) => a.user_name.localeCompare(b.user_name))
-      );
+      setSortOrders(sortOrders.sort((a, b) => a.user_name.localeCompare(b.user_name)));
       setSortName(!sortName);
     } else {
-      setSortOrders(
-        sortOrders.sort((a, b) => b.user_name.localeCompare(a.user_name))
-      );
+      setSortOrders(sortOrders.sort((a, b) => b.user_name.localeCompare(a.user_name)));
       setSortName(!sortName);
     }
   };
 
   const sortByProduct = (e) => {
     if (sortNumbers) {
-      setSortOrders(
-        sortOrders.sort((a, b) => a.product.localeCompare(b.product))
-      );
+      setSortOrders(sortOrders.sort((a, b) => a.product.localeCompare(b.product)));
       setSortNumbers(!sortNumbers);
     } else {
-      setSortOrders(
-        sortOrders.sort((a, b) => b.product.localeCompare(a.product))
-      );
+      setSortOrders(sortOrders.sort((a, b) => b.product.localeCompare(a.product)));
       setSortNumbers(!sortNumbers);
     }
   };
 
   const sortByAgent = () => {
     if (sortLocation) {
-      setSortOrders(
-        sortOrders.sort((a, b) => a.agent_name.localeCompare(b.agent_name))
-      );
+      setSortOrders(sortOrders.sort((a, b) => a.agent_name.localeCompare(b.agent_name)));
       setSortLocation(!sortLocation);
     } else {
-      setSortOrders(
-        sortOrders.sort((a, b) => b.agent_name.localeCompare(a.agent_name))
-      );
+      setSortOrders(sortOrders.sort((a, b) => b.agent_name.localeCompare(a.agent_name)));
       setSortLocation(!sortLocation);
     }
   };
@@ -149,14 +137,7 @@ export default function Orders() {
   );
 
   const nnn = useCallback(() => {
-    const orderstatus = [
-      "booked",
-      "delivered_morning",
-      "delivered_evening",
-      "cancelled",
-      "intransit",
-      "pickedup",
-    ];
+    const orderstatus = ["booked", "delivered_morning", "delivered_evening", "cancelled", "intransit", "pickedup"];
 
     const orderStatus = (userqr) => {
       let statss = orderstatus[userqr];
@@ -219,12 +200,7 @@ export default function Orders() {
         <>
           <Spinner />
           <Skeleton animation="wave" height={100} width="80%" />
-          <Skeleton
-            variant="rectangular"
-            animation="wave"
-            width={210}
-            height={118}
-          />
+          <Skeleton variant="rectangular" animation="wave" width={210} height={118} />
         </>
       ) : (
         <>
@@ -233,22 +209,14 @@ export default function Orders() {
               <CartIcon /> {"  "} My Orders
             </div>
             <div>
-              <button
-                className="Users__refresh-button"
-                onClick={(e) => exportToggle(!addexport)}
-              >
+              <button className="Users__refresh-button" onClick={(e) => exportToggle(!addexport)}>
                 {addexport ? "Back to Orders" : "Export current data"}
               </button>
             </div>
           </div>
           {addexport ? (
             <Paper>
-              <ExportData
-                users={users}
-                deliveryTypes={deliveryTypes}
-                products={products}
-                orders={convertedOrders}
-              />
+              <ExportData users={users} deliveryTypes={deliveryTypes} products={products} orders={convertedOrders} />
             </Paper>
           ) : (
             <>
@@ -260,10 +228,7 @@ export default function Orders() {
                 sortByAgent={sortByAgent}
               ></MiniNavbar>
               {currentUser ? (
-                <OrdersCancel
-                  access_token={access_token}
-                  order={currentUser}
-                ></OrdersCancel>
+                <OrdersCancel access_token={access_token} order={currentUser}></OrdersCancel>
               ) : (
                 <div>
                   <OrdersListing
@@ -280,11 +245,7 @@ export default function Orders() {
                         variant="outlined"
                         color="primary"
                         boundaryCount={2}
-                        count={
-                          orders.length % 6 === 0
-                            ? orders.length / 6
-                            : Math.floor(orders.length / 6) + 1
-                        }
+                        count={orders.length % 6 === 0 ? orders.length / 6 : Math.floor(orders.length / 6) + 1}
                         page={page}
                       />
                     </Stack>
