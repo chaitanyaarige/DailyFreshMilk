@@ -13,31 +13,47 @@ import { toPng } from "html-to-image";
 import { useQuery } from "react-query";
 import { listUsers } from "store/user";
 import { saveAs } from "file-saver";
+import AssignUsers from "components/AssigningUsersToAgent/AssignUsers";
+import { listAgentUsers } from "store/assignUsers";
 
 export default function UsersHistory() {
   let userInfo = useContext(UserContext);
   const [spinner, toggleSpinner] = useState(true);
+  const [curr_id, setCurrid] = useState(null);
   const [historyData, setHistoryData] = useState([]);
   // const [modifiedHistory, setConvertedHistory] = useState(null);
-  let { access_token } = userInfo;
-  const [fromSelectedDate, setFromDate] = useState(new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString());
+  let { access_token, refreshAccessToken } = userInfo;
+  const [fromSelectedDate, setFromDate] = useState(
+    new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()
+  );
   const [alertmessage, setalertmessage] = useState(null);
   const [toSelectedDate, setToDate] = useState(new Date().toISOString());
   const [imageUrl, setImageUrl] = useState("");
   const [currUser, setCurrUser] = useState();
+  const [currentOrder, setCurrentOrder] = useState([]);
 
   useQuery([3, userInfo.access_token], listUsers, {
     retry: 1,
     onSuccess: (data) => {
-      let curr_id = window.location.pathname.split("/")[2];
-      data?.data && setCurrUser(data.data.data.find((i) => i.user_id === curr_id));
+      data?.data &&
+        setCurrUser(data.data.data.find((i) => i.user_id === curr_id));
       toggleSpinner(false);
     },
     onError: (error) => {
       if (error && error.response && error.response.status === 401) {
         toggleSpinner(true);
-        userInfo.refreshAccessToken();
+        refreshAccessToken();
       }
+    },
+  });
+
+  useQuery([userInfo.access_token, null], listAgentUsers, {
+    retry: 1,
+    onSuccess: (data) => {
+      data?.data &&
+        setCurrentOrder(
+          data.data.data.find((item) => item.user_id === curr_id)
+        );
     },
   });
 
@@ -54,16 +70,19 @@ export default function UsersHistory() {
             light: "#FFF",
           },
         };
-        let curr_id = window.location.pathname.split("/")[2];
+        setCurrid(window.location.pathname.split("/")[2]);
         const response = await QRCode.toDataURL(curr_id, opts);
-        var url = response.replace(/^data:image\/[^;]+/, "data:application/octet-stream");
+        var url = response.replace(
+          /^data:image\/[^;]+/,
+          "data:application/octet-stream"
+        );
         setImageUrl(url);
       } catch (error) {
         console.log(error);
       }
     };
     generateQrCode();
-  }, []);
+  }, [curr_id, access_token, refreshAccessToken]);
 
   const getCustomerData = (e) => {
     setHistoryData([]);
@@ -156,6 +175,17 @@ export default function UsersHistory() {
           </Paper>
 
           <Paper className="Users__top">
+            <div>Existing Delivery Details</div>
+            <div>Selected Product: {currentOrder.product_type} </div>
+            <div>Selected DeliveryType: {currentOrder.delivery_type} </div>
+            <div>Selected Quantity {currentOrder.quantity}:</div>
+          </Paper>
+
+          <Paper>
+            <AssignUsers></AssignUsers>
+          </Paper>
+
+          <Paper className="Users__top">
             Customer History Data
             <div className="Users__fromdate">
               <TextField
@@ -182,7 +212,10 @@ export default function UsersHistory() {
                 }}
               />
             </div>
-            <button className="Users__refresh-button" onClick={(e) => getCustomerData(e)}>
+            <button
+              className="Users__refresh-button"
+              onClick={(e) => getCustomerData(e)}
+            >
               Submit
             </button>{" "}
           </Paper>
@@ -194,7 +227,12 @@ export default function UsersHistory() {
         <div className="Agents__spinners">
           <Spinner />
           <Skeleton animation="wave" height={100} width="80%" />
-          <Skeleton variant="rectangular" animation="wave" width={210} height={118} />
+          <Skeleton
+            variant="rectangular"
+            animation="wave"
+            width={210}
+            height={118}
+          />
         </div>
       )}
       {alertmessage && <MySnack message={alertmessage} />}

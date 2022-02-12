@@ -19,12 +19,13 @@ export const listProducts = (num, access_token) => {
 //   });
 // };
 
-export const updateProduct = (access_token, id, data) => {
+export const updateProduct = (queryKeys) => {
+  const { queryKey } = queryKeys;
   return axiosInstance({
     method: "POST",
-    url: `/product/${id}/update`,
-    data: data,
-    headers: { access_token: access_token },
+    url: `/product/${queryKey[1]}/update`,
+    data: queryKey[2],
+    headers: { access_token: queryKey[0] },
   });
 };
 

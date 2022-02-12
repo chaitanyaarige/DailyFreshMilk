@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from "react";
 import { useForm } from "react-hook-form";
-import { addProduct } from "store/products";
+import { updateProduct } from "store/products";
 import { useNavigate } from "react-router-dom";
 import Spinner from "components/common/Spinner";
 import Skeleton from "@mui/material/Skeleton";
@@ -8,6 +8,7 @@ import { ReactComponent as ProductIcon } from "svgs/checkList.svg";
 import "./Products.scss";
 import { listProducts } from "store/products";
 import UserContext from "UserContext";
+import { useQuery } from "react-query";
 
 export default function EditProducts() {
   const navigate = useNavigate();
@@ -16,14 +17,28 @@ export default function EditProducts() {
   const [products, setProducts] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState();
 
-  const {access_token, refreshAccessToken} = userInfo
+  const { access_token, refreshAccessToken } = userInfo;
 
   const [product, setProductProfile] = useState({
     name: "",
     description: "",
     price: "",
     measurement: "",
-  }); 
+  });
+
+  // useQuery([3, userInfo.access_token], updateProduct, {
+  //   retry: 1,
+  //   onSuccess: (data) => {
+  //     data?.data && setSelectedProduct(data.data.data);
+  //     toggleSpinner(false);
+  //   },
+  //   onError: (error) => {
+  //     if (error && error.response && error.response.status === 401) {
+  //       toggleSpinner(true);
+  //       userInfo.refreshAccessToken();
+  //     }
+  //   },
+  // });
 
   const onSubmit = async (data) => {
     const returnedTarget = Object.assign(product, data);
@@ -42,11 +57,10 @@ export default function EditProducts() {
       product,
       access_token: access_token,
     };
-    addProduct(data)
+    updateProduct(data)
       .then((res) => {
         alert("success");
-        setTimeout(() => {
-        }, 2000);
+        setTimeout(() => {}, 2000);
       })
       .catch((err) => {
         console.log("Failed", err.response);
@@ -55,8 +69,15 @@ export default function EditProducts() {
   };
 
   useEffect(() => {
+    const setCurrentProduct = () => {
+      let curr_id = window.location.pathname.split("/")[2];
+      if (curr_id) {
+        let abb = products.find((item) => item.id === curr_id);
+        setSelectedProduct(abb);
+      }
+    };
     toggleSpinner(true);
-    listProducts(null, userInfo.access_token)
+    listProducts(null, access_token)
       .then((res) => {
         setProducts(res.data.data);
         setCurrentProduct();
@@ -70,15 +91,7 @@ export default function EditProducts() {
           toggleSpinner(false);
         }
       });
-  }, [userInfo.access_token]);
-
-  const setCurrentProduct = () => {
-    let curr_id = window.location.pathname.split("/")[2];
-    if (curr_id) {
-      let abb = products.find((item) => item.id == curr_id);
-      setSelectedProduct(abb);
-    }
-  };
+  }, [access_token, refreshAccessToken, products]);
 
   const goBack = (e) => {
     e.preventDefault();
@@ -116,71 +129,90 @@ export default function EditProducts() {
         </div>
       </div>
       {!spinner ? (
-    <div className="Products__sub-container">
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <div className="Login__col-3">
-        {errors.name && <div className="Users__errors">Name needs to be at least 3 characters</div>}
-        <input
-          className="Login__input-focus-effect"
-          type="text"
-          placeholder="Name"
-          {...register("name", {
-            required: "required",
-            minLength: {
-              value: 3,
-              message: "Please enter a valid password min 8 char",
-            },
-          })}
-        ></input>
-        <span className="focus-border"></span>
-      </div>
+        <div className="Products__sub-container">
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <div className="Login__col-3">
+              {errors.name && (
+                <div className="Users__errors">
+                  Name needs to be at least 3 characters
+                </div>
+              )}
+              <input
+                className="Login__input-focus-effect"
+                type="text"
+                placeholder="Name"
+                {...register("name", {
+                  required: "required",
+                  minLength: {
+                    value: 3,
+                    message: "Please enter a valid password min 8 char",
+                  },
+                })}
+              ></input>
+              <span className="focus-border"></span>
+            </div>
 
-      <div className="Login__col-3">
-        {errors.price && <div className="Users__errors">This field is required</div>}
+            <div className="Login__col-3">
+              {errors.price && (
+                <div className="Users__errors">This field is required</div>
+              )}
 
-        <input
-          className="Login__input-focus-effect"
-          placeholder="Price"
-          type="number"
-          {...register("price", {
-            required: "required",
-            min: 1,
-          })}
-        />
-        <span className="focus-border"></span>
-      </div>
+              <input
+                className="Login__input-focus-effect"
+                placeholder="Price"
+                type="number"
+                {...register("price", {
+                  required: "required",
+                  min: 1,
+                })}
+              />
+              <span className="focus-border"></span>
+            </div>
 
-      <div className="Login__col-3">
-        {errors.description && <div className="Users__errors">Please enter a valid description min 8 char"</div>}
-        <input
-          className="Login__input-focus-effect"
-          type="description"
-          placeholder="Description"
-          {...register("description", { required: "required", min: 5 })}
-        ></input>
-        <span className="focus-border"></span>
-      </div>
+            <div className="Login__col-3">
+              {errors.description && (
+                <div className="Users__errors">
+                  Please enter a valid description min 8 char"
+                </div>
+              )}
+              <input
+                className="Login__input-focus-effect"
+                type="description"
+                placeholder="Description"
+                {...register("description", { required: "required", min: 5 })}
+              ></input>
+              <span className="focus-border"></span>
+            </div>
 
-      <div className="Login__col-3">
-        {errors.measurement && <div className="Users__errors">Please enter a valid measurement Kg/packet/Litre"</div>}
-        <input
-          className="Login__input-focus-effect"
-          type="measurement"
-          placeholder="measurement"
-          {...register("measurement", { required: "required", min: 5 })}
-        ></input>
-        <span className="focus-border"></span>
-      </div>
+            <div className="Login__col-3">
+              {errors.measurement && (
+                <div className="Users__errors">
+                  Please enter a valid measurement Kg/packet/Litre"
+                </div>
+              )}
+              <input
+                className="Login__input-focus-effect"
+                type="measurement"
+                placeholder="measurement"
+                {...register("measurement", { required: "required", min: 5 })}
+              ></input>
+              <span className="focus-border"></span>
+            </div>
 
-      <div className="Login__col-3">
-        <input
-          className={errors.length ? "Users__refresh-button Users__refresh-button-disabled" : "Users__refresh-button"}
-          type="submit"
-          value="Add New Product"
-        ></input>
-      </div>
-    </form>
-  </div>      ) : (
+            <div className="Login__col-3">
+              <input
+                className={
+                  errors.length
+                    ? "Users__refresh-button Users__refresh-button-disabled"
+                    : "Users__refresh-button"
+                }
+                type="submit"
+                value="Add New Product"
+              ></input>
+            </div>
+          </form>
+        </div>
+      ) : (
         <div className="Products__spinners">
           <Spinner />
           <Skeleton animation="wave" height={100} width="80%" />

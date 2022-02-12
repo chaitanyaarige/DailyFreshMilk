@@ -20,7 +20,9 @@ export default function OrdersCancel(props) {
   return (
     <>
       <div className="OrdersCancel__main-container">
-        <div className="OrdersCancel__row-class">Cancel order Delivery id: {props.order}</div>
+        <div className="OrdersCancel__row-class">
+          Cancel order Delivery id: {props.order}
+        </div>
         <div className="OrdersCancel__row-class">
           <TextField
             id="frdate"
