@@ -35,21 +35,14 @@ export default function SelectUser(props) {
         onChange={(e, value) => props.handleData(e, value, "user")}
         options={users}
         // disableCloseOnSelect
-        getOptionLabel={(option) => option.name}
+        getOptionLabel={(option) => option.phone_no}
         renderOption={(props, option, { selected }) => (
           <li {...props}>
-            <Checkbox
-              icon={icon}
-              checkedIcon={checkedIcon}
-              style={{ marginRight: 8 }}
-              checked={selected}
-            />
-            {option.name}
+            <Checkbox icon={icon} checkedIcon={checkedIcon} style={{ marginRight: 8 }} checked={selected} />
+            {option.phone_no}
           </li>
         )}
-        renderInput={(params) => (
-          <TextField {...params} label="Select Users" placeholder="Users" />
-        )}
+        renderInput={(params) => <TextField {...params} label="Select Users" placeholder="Users" />}
       />
     </div>
   );
