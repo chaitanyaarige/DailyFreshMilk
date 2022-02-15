@@ -13,9 +13,11 @@ import { toPng } from "html-to-image";
 import { useQuery } from "react-query";
 import { listUsers } from "store/user";
 import { saveAs } from "file-saver";
-import AssignUsers from "components/AssigningUsersToAgent/AssignUsers";
+import AssignSingleUser from "components/Users/_id/AssignSingleUser";
 import { listAgentUsers } from "store/assignUsers";
 import DailyMilkFreshLogo from "logo.png";
+import { listProducts } from "store/products";
+import { listDeliveryTypes } from "store/deliveries";
 
 export default function UsersHistory() {
   let userInfo = useContext(UserContext);
@@ -30,6 +32,8 @@ export default function UsersHistory() {
   const [imageUrl, setImageUrl] = useState("");
   const [currUser, setCurrUser] = useState();
   const [currentOrder, setCurrentOrder] = useState([]);
+  const [deliveryTypes, setDeliveryTypes] = useState([]);
+  const [products, setProducts] = useState([]);
 
   useQuery([3, userInfo.access_token], listUsers, {
     retry: 1,
@@ -51,6 +55,33 @@ export default function UsersHistory() {
       data?.data && setCurrentOrder(data.data.data.filter((item) => item.user_id === curr_id));
     },
   });
+
+  useQuery([0, access_token], listProducts, {
+    retry: 1,
+    onSuccess: (data) => {
+      data?.data && setProducts(data.data.data);
+    },
+    onError: (error) => {
+      if (error?.response?.status === 401) {
+        refreshAccessToken();
+      }
+    },
+  });
+
+  useEffect(() => {
+    // toggleSpinner(true);
+    listDeliveryTypes(access_token)
+      .then((res) => {
+        setDeliveryTypes(res.data.data);
+      })
+      .catch((res) => {
+        console.log(res);
+        if (res && res.response && res.response.status === 401) {
+          refreshAccessToken();
+        }
+      });
+    // toggleSpinner(false);
+  }, [access_token, refreshAccessToken]);
 
   useEffect(() => {
     const generateQrCode = async () => {
@@ -141,6 +172,16 @@ export default function UsersHistory() {
   //   });
   // };
 
+  const orderType = (id) => {
+    let nameItem = deliveryTypes.find((item) => item.delivery_type === id);
+    return nameItem && nameItem.name;
+  };
+
+  const orderProducts = (id) => {
+    let nameItem = products.find((item) => item.product_type === id);
+    return nameItem && nameItem.name;
+  };
+
   const onCapture = () => {
     toPng(document.getElementById("chaiuserqr")).then(function (dataUrl) {
       saveAs(dataUrl, currUser.name + "qrcode.jpg");
@@ -172,16 +213,14 @@ export default function UsersHistory() {
             return (
               <Paper className="Users__top">
                 <div>Existing Delivery Details</div>
-                <div>Selected Product: {cuser.product_type} </div>
-                <div>Selected DeliveryType: {cuser.delivery_type} </div>
+                <div>Selected Product: {orderProducts(cuser.product_type)} </div>
+                <div>Selected DeliveryType: {orderType(cuser.delivery_type)}</div>
                 <div>Selected Quantity {cuser.quantity}</div>
               </Paper>
             );
           })}
 
-          <Paper>
-            <AssignUsers></AssignUsers>
-          </Paper>
+          <AssignSingleUser currUser={currUser}></AssignSingleUser>
 
           <Paper className="Users__top">
             Customer History Data

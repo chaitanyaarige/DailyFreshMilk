@@ -183,7 +183,7 @@ export default function EditProducts() {
               <input
                 className={errors.length ? "Users__refresh-button Users__refresh-button-disabled" : "Users__refresh-button"}
                 type="submit"
-                value="Edit Product"
+                value="Save Product"
               ></input>
             </div>
           </form>
