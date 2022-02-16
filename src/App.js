@@ -6,7 +6,8 @@ import UserContext from "UserContext";
 import Login from "components/login/Login";
 import Orders from "components/Orders/Orders";
 import Users from "components/Users/Users";
-import UsersHistory from "components/Users/_id/User";
+import UsersDetails from "components/Users/_id/User";
+import UsersHistory from "components/Users/_id/CustomerHistory";
 // import OrdersCancel from "components/Orders/OrdersCancel";
 import Products from "components/Products/Products";
 import EditProducts from "components/Products/EditProduct";
@@ -92,7 +93,8 @@ export default function App() {
           <Route exact path="/" element={<PrivateRoute />}>
             <Route exact path="/" element={<Dashboard />} />
             <Route exact path="/users" element={<Users />} />
-            <Route exact path="/users/:id" element={<UsersHistory />} />
+            <Route exact path="/users/:id" element={<UsersDetails />} />
+            <Route exact path="/users/:id/history" element={<UsersHistory />} />
             <Route exact path="/orders" element={<Orders />} />
             {/* <Route exact path="/orders/:id" element={<OrdersCancel />} /> */}
             <Route exact path="/agents" element={<Agents />} />

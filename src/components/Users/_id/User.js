@@ -18,6 +18,7 @@ import { listAgentUsers } from "store/assignUsers";
 import DailyMilkFreshLogo from "logo.png";
 import { listProducts } from "store/products";
 import { listDeliveryTypes } from "store/deliveries";
+import CustomerHistory from "components/Users/_id/CustomerHistory";
 
 export default function UsersHistory() {
   let userInfo = useContext(UserContext);
@@ -201,7 +202,7 @@ export default function UsersHistory() {
                     <img width="350px" height="350px" src={imageUrl} alt="img" />
                   </div>
                 ) : null}
-                {currUser.name}, {currUser.phone_no}, <br></br> {currUser.address}
+                {currUser.address}
               </div>
             </div>
             <div className="Users__refresh-button " onClick={onCapture}>
@@ -209,19 +210,23 @@ export default function UsersHistory() {
             </div>{" "}
           </Paper>
 
-          {currentOrder.map((cuser, index) => {
-            return (
-              <Paper className="Users__top">
-                <div>Existing Delivery Details</div>
-                <div>Selected Product: {orderProducts(cuser.product_type)} </div>
-                <div>Selected DeliveryType: {orderType(cuser.delivery_type)}</div>
-                <div>Selected Quantity {cuser.quantity}</div>
-              </Paper>
-            );
-          })}
+          <Paper className="Users__top">
+            <h4>Existing Delivery Details:</h4>
+            {currentOrder.map((cuser, index) => {
+              return (
+                <>
+                  <hr></hr>
+                  <div>Selected Product: {orderProducts(cuser.product_type)} </div>
+                  <div>Selected DeliveryType: {orderType(cuser.delivery_type)}</div>
+                  <div>Selected Quantity {cuser.quantity}</div>
+                </>
+              );
+            })}
+          </Paper>
 
           <AssignSingleUser currUser={currUser}></AssignSingleUser>
 
+          <CustomerHistory></CustomerHistory>
           <Paper className="Users__top">
             Customer History Data
             <div className="Users__fromdate">
