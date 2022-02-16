@@ -1,35 +1,37 @@
-import { getHistory } from "store/deliveries";
+//  React imports
 import { useEffect, useContext, useState } from "react";
 import UserContext from "UserContext";
+import { useNavigate } from "react-router-dom";
+
+// third party imports
 import QRCode from "qrcode";
 import Paper from "@mui/material/Paper";
-import TextField from "@mui/material/TextField";
-import HistoryTable from "components/common/HistoryTable";
-import "../Users.scss";
-import MySnack from "components/common/MySnack";
 import Skeleton from "@mui/material/Skeleton";
-import Spinner from "components/common/Spinner";
 import { toPng } from "html-to-image";
 import { useQuery } from "react-query";
-import { listUsers } from "store/user";
 import { saveAs } from "file-saver";
-import AssignSingleUser from "components/Users/_id/AssignSingleUser";
+
+//  Api calls
+import { listUsers } from "store/user";
 import { listAgentUsers } from "store/assignUsers";
-import DailyMilkFreshLogo from "logo.png";
 import { listProducts } from "store/products";
 import { listDeliveryTypes } from "store/deliveries";
-import CustomerHistory from "components/Users/_id/CustomerHistory";
+
+// components imports
+import "../Users.scss";
+import { ReactComponent as UserBadge } from "svgs/users.svg";
+import AssignSingleUser from "components/Users/_id/AssignSingleUser";
+// import Spinner from "components/common/Spinner";
+import DailyMilkFreshLogo from "logo.png";
+import EditUser from "components/Users/_id/EditUser";
 
 export default function UsersHistory() {
   let userInfo = useContext(UserContext);
+  let navigate = useNavigate();
   const [spinner, toggleSpinner] = useState(true);
   const [curr_id, setCurrid] = useState(null);
-  const [historyData, setHistoryData] = useState([]);
-  // const [modifiedHistory, setConvertedHistory] = useState(null);
   let { access_token, refreshAccessToken } = userInfo;
-  const [fromSelectedDate, setFromDate] = useState(new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString());
-  const [alertmessage, setalertmessage] = useState(null);
-  const [toSelectedDate, setToDate] = useState(new Date().toISOString());
+
   const [imageUrl, setImageUrl] = useState("");
   const [currUser, setCurrUser] = useState();
   const [currentOrder, setCurrentOrder] = useState([]);
@@ -40,7 +42,9 @@ export default function UsersHistory() {
     retry: 1,
     onSuccess: (data) => {
       data?.data && setCurrUser(data.data.data.find((i) => i.user_id === curr_id));
-      toggleSpinner(false);
+      setTimeout(() => {
+        toggleSpinner(false);
+      }, 2000);
     },
     onError: (error) => {
       if (error && error.response && error.response.status === 401) {
@@ -108,70 +112,16 @@ export default function UsersHistory() {
     generateQrCode();
   }, [curr_id, access_token, refreshAccessToken]);
 
-  const getCustomerData = (e) => {
-    setHistoryData([]);
-    toggleSpinner(true);
-    e.preventDefault();
-    let curr_id = window.location.pathname.split("/")[2];
-    let data = {
-      customer_user_id: [curr_id],
-      from: fromSelectedDate,
-      to: toSelectedDate,
-    };
-    if (curr_id) {
-      getHistory(access_token, data)
-        .then((res) => {
-          // setHistoryData(res.data);
-          modifyHistoryData(res.data.data);
-          toggleSpinner(false);
-          setalertmessage("Data Fetched");
-        })
-        .catch((res) => {
-          if (res && res.response && res.response.status === 401) {
-            toggleSpinner(true);
-            setalertmessage("Refreshing");
-            userInfo.refreshAccessToken();
-          }
-          toggleSpinner(false);
-          setalertmessage("No Data Available for Dates ");
-        });
-    }
-  };
-
-  const modifyHistoryData = (hist) => {
-    // setHistoryData(hist);
-    hist.forEach((item, index) => {
-      let abc = {
-        id: index + 1,
-        user_name: item.UserDetail.name,
-        // agent_name: item.UserDetail.name,
-        delivery_type: item.DeliveryType.name,
-        product: item.Product.name,
-        quantity: item.quantity,
-        price: item.price,
-        delivered_at: new Date(item.delivered_at).toLocaleString("en-Gb"),
-      };
-      setHistoryData((prevData) => [...prevData, abc]);
-    });
-  };
-  const captureFromDate = (e) => {
-    e.preventDefault();
-    let fromDate = new Date(e.target.value).toISOString();
-    setFromDate(fromDate);
-  };
-
-  const captureToDate = (e) => {
-    e.preventDefault();
-    // let a = e.target.setHours(23, 59, 00, 00);
-    let toDate = new Date(e.target.value).toISOString();
-    setToDate(toDate);
-  };
-
   // const downloadQR = (e) => {
   //   htmlToImage.toPng(document.getElementById("my-node")).then(function (dataUrl) {
   //     download(dataUrl, "my-node.png");
   //   });
   // };
+
+  const gotouserhistory = (e) => {
+    e.preventDefault();
+    navigate(`/users/${curr_id}/history`);
+  };
 
   const orderType = (id) => {
     let nameItem = deliveryTypes.find((item) => item.delivery_type === id);
@@ -191,6 +141,17 @@ export default function UsersHistory() {
 
   return (
     <div className="main-container">
+      <div className="Orders__main-heading">
+        <div className="General-main-heading">
+          <UserBadge /> {"  "} Users
+        </div>
+        <div>
+          <button className="Users__refresh-button" onClick={(e) => gotouserhistory(e)}>
+            Show History
+          </button>
+        </div>
+      </div>
+
       {!spinner ? (
         <>
           <Paper className="AssignUsers__sub" elevation={2}>
@@ -225,51 +186,17 @@ export default function UsersHistory() {
           </Paper>
 
           <AssignSingleUser currUser={currUser}></AssignSingleUser>
-
-          <CustomerHistory></CustomerHistory>
-          <Paper className="Users__top">
-            Customer History Data
-            <div className="Users__fromdate">
-              <TextField
-                id="fromdate"
-                label="From Date"
-                type="date"
-                onChange={(e) => captureFromDate(e)}
-                defaultValue={new Date().toLocaleDateString("fr-CA")}
-                InputLabelProps={{
-                  shrink: true,
-                }}
-              />
-            </div>
-            <div className="Users__fromdate">
-              <TextField
-                id="todate"
-                label="To Date"
-                type="date"
-                onChange={(e) => captureToDate(e)}
-                defaultValue={new Date().toLocaleDateString("fr-CA")}
-                InputLabelProps={{
-                  shrink: true,
-                  max: new Date().toLocaleDateString("fr-CA"),
-                }}
-              />
-            </div>
-            <button className="Users__refresh-button" onClick={(e) => getCustomerData(e)}>
-              Submit
-            </button>{" "}
-          </Paper>
-          <Paper>
-            <HistoryTable historyData={historyData} />
-          </Paper>
+          <EditUser access_token={access_token} currUser={currUser}></EditUser>
         </>
       ) : (
         <div className="Agents__spinners">
-          <Spinner />
+          {/* <Spinner /> */}
+          <Skeleton animation="wave" height={100} width="80%" />
+          <Skeleton animation="wave" height={100} width="80%" />
           <Skeleton animation="wave" height={100} width="80%" />
           <Skeleton variant="rectangular" animation="wave" width={210} height={118} />
         </div>
       )}
-      {alertmessage && <MySnack message={alertmessage} />}
     </div>
   );
 }

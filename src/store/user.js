@@ -17,6 +17,7 @@ export const editUser = (data) => {
     data: {
       name: data.name,
       email_id: data.email_id,
+      address: data.address,
     },
     headers: {
       access_token: data.access_token,

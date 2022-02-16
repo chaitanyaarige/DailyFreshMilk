@@ -52,14 +52,14 @@ export default function Settings() {
     e.persist();
     if (selectedProfile) return;
     if (formType === "name") setUserProfile({ ...user, name: e.target.value });
-    if (formType === "email")
-      setUserProfile({ ...user, email_id: e.target.value });
+    if (formType === "email") setUserProfile({ ...user, email_id: e.target.value });
   };
 
   const submitUserProfile = (e) => {
     let data = {
       name: user.name,
       email_id: user.email_id,
+      address: user.address,
       access_token: access_token,
     };
     editUser(data).then((res) => {
@@ -73,21 +73,13 @@ export default function Settings() {
       <div className="Settings__heading-container">
         <div
           onClick={(e) => toggleProfileSelection(e)}
-          className={
-            selectedProfile
-              ? "Settings__heading-left Settings__heading-left-selected"
-              : "Settings__heading-left"
-          }
+          className={selectedProfile ? "Settings__heading-left Settings__heading-left-selected" : "Settings__heading-left"}
         >
           Profile
         </div>
         <div
           onClick={(e) => toggleProfileSelection(e)}
-          className={
-            !selectedProfile
-              ? "Settings__heading-right Settings__heading-right-selected"
-              : "Settings__heading-right"
-          }
+          className={!selectedProfile ? "Settings__heading-right Settings__heading-right-selected" : "Settings__heading-right"}
         >
           Edit Profile
         </div>
@@ -107,34 +99,19 @@ export default function Settings() {
 
       <div className="Settings__field-container">
         <label className="Settings__label">Email</label>
-        <input
-          onChange={(e) => assignUserProfile(e, "email")}
-          value={user.email_id}
-          type="text"
-          className="Settings__firstname"
-        ></input>
+        <input onChange={(e) => assignUserProfile(e, "email")} value={user.email_id} type="text" className="Settings__firstname"></input>
       </div>
 
       {selectedProfile && (
         <div>
           <div className="Settings__field-container">
             <label className="Settings__label">Phone</label>
-            <input
-              readOnly
-              value={user.phone_no}
-              type="text"
-              className="Settings__email"
-            ></input>
+            <input readOnly value={user.phone_no} type="text" className="Settings__email"></input>
           </div>
 
           <div className="Settings__field-container">
             <label className="Settings__label">Address</label>
-            <input
-              onChange={(e) => assignUserProfile(e, "email")}
-              value={user.address || ""}
-              type="text"
-              className="Settings__firstname"
-            ></input>
+            <input onChange={(e) => assignUserProfile(e, "email")} value={user.address || ""} type="text" className="Settings__firstname"></input>
           </div>
         </div>
       )}
@@ -142,12 +119,7 @@ export default function Settings() {
       {!selectedProfile && (
         <div>
           <div className="Settings__field-container">
-            <input
-              onClick={(e) => submitUserProfile(e)}
-              value="Save"
-              type="submit"
-              className="Settings__submit"
-            ></input>
+            <input onClick={(e) => submitUserProfile(e)} value="Save" type="submit" className="Settings__submit"></input>
           </div>
         </div>
       )}
