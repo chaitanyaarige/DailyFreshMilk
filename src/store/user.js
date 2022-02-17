@@ -10,7 +10,7 @@ export const getUser = (token) => {
   });
 };
 
-export const editUser = (data) => {
+export const editOtherUser = (data) => {
   return axiosInstance({
     method: "POST",
     url: "user/update",
@@ -18,6 +18,21 @@ export const editUser = (data) => {
       name: data.name,
       email_id: data.email_id,
       address: data.address,
+      customer_user_id: data.customer_user_id,
+    },
+    headers: {
+      access_token: data.access_token,
+    },
+  });
+};
+
+export const editUser = (data) => {
+  return axiosInstance({
+    method: "POST",
+    url: "user/update",
+    data: {
+      name: data.name,
+      email_id: data.email_id,
     },
     headers: {
       access_token: data.access_token,

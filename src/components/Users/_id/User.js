@@ -163,7 +163,7 @@ export default function UsersHistory() {
                     <img width="350px" height="350px" src={imageUrl} alt="img" />
                   </div>
                 ) : null}
-                {currUser.address}
+                {currUser && currUser.address}
               </div>
             </div>
             <div className="Users__refresh-button " onClick={onCapture}>

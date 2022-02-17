@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
 // internal imports
-import { editUser } from "store/user";
+import { editOtherUser } from "store/user";
 import MySnack from "components/common/MySnack";
 import "../Users.scss";
 
@@ -15,6 +15,7 @@ export default function EditUser(props) {
     email_id: "",
     address: "",
     user_type: "3",
+    customer_user_id: "",
   });
   const [alertmessage, setalertmessage] = useState(null);
 
@@ -42,8 +43,9 @@ export default function EditUser(props) {
       email_id: user.email_id,
       address: user.address,
       access_token: props.access_token,
+      customer_user_id: props.currUser.user_id,
     };
-    editUser(data)
+    editOtherUser(data)
       .then((res) => {
         setalertmessage("successfully saved");
       })
